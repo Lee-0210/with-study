@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .todo-container {
+            max-width: 1100px;
+            margin: 50px auto;
+        }
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .table thead th {
+            background-color: #212529;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .todo-title {
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .content-cell {
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .badge-status {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: 999px;
+        }
+        .btn-action {
+            min-width: 70px;
+        }
+    </style>
+</head>
+<body>
+<div class="container todo-container">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="todo-title mb-0">📋 Todo List</h1>
+            <a href="/todo/write" class="btn btn-primary">+ 새 할 일 추가</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th style="width: 7%;">번호</th>
+                    <th style="width: 18%;">제목</th>
+                    <th style="width: 28%;">내용</th>
+                    <th style="width: 10%;">상태</th>
+                    <th style="width: 10%;">우선순위</th>
+                    <th style="width: 12%;">마감일</th>
+                    <th style="width: 15%;">관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(todoList)}">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        등록된 할 일이 없습니다.
+                    </td>
+                </tr>
+
+                <tr th:each="todo : ${todoList}">
+                    <td th:text="${todo.id}">1</td>
+                    <td class="fw-bold" th:text="${todo.title}">제목</td>
+                    <td class="content-cell" th:text="${todo.content}">내용</td>
+
+                    <td>
+                        <span th:if="${todo.status == 'DONE'}"
+                              class="badge bg-success badge-status">완료</span>
+                        <span th:if="${todo.status == 'TODO'}"
+                              class="badge bg-warning text-dark badge-status">진행중</span>
+                    </td>
+
+                    <td>
+                        <span th:if="${todo.priority == 'HIGH'}" class="badge bg-danger">높음</span>
+                        <span th:if="${todo.priority == 'MEDIUM'}" class="badge bg-primary">중간</span>
+                        <span th:if="${todo.priority == 'LOW'}" class="badge bg-secondary">낮음</span>
+                    </td>
+
+                    <td th:text="${todo.dueDate}">2026-04-07</td>
+
+                    <td>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a th:href="@{/todo/detail(id=${todo.id})}"
+                               class="btn btn-outline-info btn-sm btn-action">상세</a>
+                            <a th:href="@{/todo/edit(id=${todo.id})}"
+                               class="btn btn-outline-secondary btn-sm btn-action">수정</a>
+                            <a th:href="@{/todo/delete(id=${todo.id})}"
+                               class="btn btn-outline-danger btn-sm btn-action"
+                               onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3 text-end text-muted small">
+            총 <span th:text="${#lists.size(todoList)}">0</span>건
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

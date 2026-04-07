@@ -1,0 +1,24 @@
+spring:
+    application:
+        name: with-boot
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/todo
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+    thymeleaf:
+        cache: false
+
+    security:
+        user:
+            name: withsystem
+            password: niceduri123
+
+mybatis:
+    type-aliases-package: com.with.www.withboot
+    mapper-locations: classpath:mapper/**/*.xml
+    configuration:
+        map-underscore-to-camel-case: true
+
