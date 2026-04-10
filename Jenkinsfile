@@ -23,6 +23,27 @@ pipeline {
                 sh 'ls -al build/libs'
             }
         }
+
+        stage('Docker Login Build & Push') {
+            steps {
+                echo '==================== Docker 로그인 ===================='
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh """
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    """
+
+                    echo '==================== Docker Build & Push ===================='
+                    sh """
+                        docker build -t $DOCKER_USER/with-study .
+                        docker push $DOCKER_USER/with-study
+                    """
+                }
+            }
+        }
     }
 
     post {
