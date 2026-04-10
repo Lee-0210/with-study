@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/todos")
 public class TodoController {
 
-    private static final String folder = "/todo";
+    private static final String folder = "todo";
 
     private final TodoService todoService;
 
