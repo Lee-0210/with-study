@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_TAG = "${BUILD_NUMBER}-${GIT_COMMIT.take(7)}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -38,9 +42,26 @@ pipeline {
 
                     echo '==================== Docker Build & Push ===================='
                     sh """
-                        docker build -t $DOCKER_USER/with-study .
-                        docker push $DOCKER_USER/with-study
+                        docker build -t $DOCKER_USER/with-study:${IMAGE_TAG} .
+                        docker push $DOCKER_USER/with-study:${IMAGE_TAG}
                     """
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo '==================== 프로젝트 배포  ===================='
+                sshagent(['win-ssh-key']) {
+
+                    withCredentials([
+                        string(credentialsId: 'MYSQL_ROOT_PASSWORD', variable: 'MYSQL_ROOT_PASSWORD')
+                    ]) {
+
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ljy@192.168.1.191 "wsl -d Ubuntu -- bash /home/ljy/deploy.sh ${MYSQL_ROOT_PASSWORD} ${IMAGE_TAG}"
+                        """
+                    }
                 }
             }
         }
