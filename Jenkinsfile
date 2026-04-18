@@ -59,7 +59,7 @@ pipeline {
                     ]) {
 
                         sh """
-                            ssh -o StrictHostKeyChecking=no ljy@192.168.1.191 "wsl -d Ubuntu -- bash /home/ljy/deploy.sh ${MYSQL_ROOT_PASSWORD} ${IMAGE_TAG}"
+                            ssh ljy@192.168.1.191 "powershell -ExecutionPolicy Bypass -File C:\\deploy.ps1 '${IMAGE_TAG}' '${MYSQL_ROOT_PASSWORD}'"
                         """
                     }
                 }
